@@ -1,0 +1,1 @@
+﻿{"version":"0.2.0","configurations":[{"type":"java","name":"Run ChessApp","request":"launch","mainClass":"chessengine.ChessApp","projectName":"chessengine"}]}
