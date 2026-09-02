@@ -29,19 +29,34 @@ public class ChessApp {
 
     private void ensureSprites() throws IOException {
         File resDir = new File(projectRoot, "resources/pieces");
+        System.out.println("Looking for sprites in: " + resDir.getAbsolutePath());
+        System.out.println("Directory exists: " + resDir.exists());
         if (!resDir.exists()) resDir.mkdirs();
         String[] types = {"pawn","knight","bishop","rook","queen","king"};
         String[] colors = {"white","black"};
         for (String color : colors) {
             for (String t : types) {
-                File out = new File(resDir, color + "_" + t + ".png");
-                if (!out.exists()) {
+                File file = new File(resDir, color + "_" + t + ".png");
+                System.out.println("Attempting to load: " + file.getAbsolutePath() + " (exists: " + file.exists() + ")");
+                if (!file.exists()) {
+                    System.out.println("  -> File not found, generating sprite");
                     BufferedImage img = makeSprite(t, color.equals("white"));
-                    ImageIO.write(img, "PNG", out);
+                    ImageIO.write(img, "PNG", file);
                 }
-                sprites.put(color + ":" + t, ImageIO.read(out));
+                try {
+                    BufferedImage img = ImageIO.read(file);
+                    if (img != null) {
+                        sprites.put(color + ":" + t, img);
+                        System.out.println("  -> Loaded: " + img.getWidth() + "x" + img.getHeight());
+                    } else {
+                        System.out.println("  -> ImageIO returned null");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Failed to load: " + file.getAbsolutePath() + " - " + e.getMessage());
+                }
             }
         }
+        System.out.println("Total sprites loaded: " + sprites.size());
     }
 
     private BufferedImage makeSprite(String type, boolean white) {
@@ -253,7 +268,7 @@ public class ChessApp {
                     String key = (pc.color()==Color.WHITE?"white":"black")+":"+pc.getClass().getSimpleName().toLowerCase();
                     Image img = sprites.getOrDefault(key, null);
                     if (img!=null) {
-                        g.drawImage(img, c*tile + (tile-48)/2, r*tile + (tile-48)/2, null);
+                        g.drawImage(img, c*tile, r*tile, tile, tile, null);
                     } else {
                         g.setColor(pc.color()==chessengine.Color.WHITE?java.awt.Color.WHITE:java.awt.Color.BLACK);
                         g.fillOval(c*tile+8, r*tile+8, tile-16, tile-16);
