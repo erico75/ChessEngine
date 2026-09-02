@@ -1,0 +1,51 @@
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Java
+target/
+*.class
+*.jar
+*.war
+
+# Build
+build/
+dist/
+
+# OS files
+AppData/
+.cache/
+.config/
+.codex/
+.copilot/
+.dotnet/
+.expo/
+.ipython/
+.jdks/
+.m2/
+.node_repl_history
+.nuget/
+.rustup/
+.vscode-R/
+.vscode-shared/
+
+# Local/temp
+*.tmp
+*.temp
+node_modules/
+
+# Windows
+NTUSER.DAT*
+*.TxR*
+*.TM.blf
+*.TMContainer*
+Configurações Locais/
+Meus Documentos/
+Dados de Aplicativos/
