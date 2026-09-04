@@ -1,28 +1,23 @@
-# Only track chessengine folder and this .gitignore
 /*
 !/chessengine/
 !.gitignore
 
-# Ignore everything in chessengine EXCEPT what we want
 chessengine/*
 !chessengine/src/
 !chessengine/resources/
 !chessengine/.vscode/
 !chessengine/pom.xml
 
-# Ignore build artifacts
 chessengine/target/
 chessengine/.classpath
 chessengine/.project
 chessengine/.settings/
 
-# IDE
 .idea/
 *.iml
 *.swp
 *.swo
 
-# System
 .DS_Store
 Thumbs.db
 *.log
