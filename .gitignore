@@ -1,51 +1,28 @@
-# System files
-.DS_Store
-Thumbs.db
-*.log
+# Only track chessengine folder and this .gitignore
+/*
+!/chessengine/
+!.gitignore
 
-# IDEs
-.vscode/
+# Ignore everything in chessengine EXCEPT what we want
+chessengine/*
+!chessengine/src/
+!chessengine/resources/
+!chessengine/.vscode/
+!chessengine/pom.xml
+
+# Ignore build artifacts
+chessengine/target/
+chessengine/.classpath
+chessengine/.project
+chessengine/.settings/
+
+# IDE
 .idea/
+*.iml
 *.swp
 *.swo
 
-# Java
-target/
-*.class
-*.jar
-*.war
-
-# Build
-build/
-dist/
-
-# OS files
-AppData/
-.cache/
-.config/
-.codex/
-.copilot/
-.dotnet/
-.expo/
-.ipython/
-.jdks/
-.m2/
-.node_repl_history
-.nuget/
-.rustup/
-.vscode-R/
-.vscode-shared/
-
-# Local/temp
-*.tmp
-*.temp
-node_modules/
-
-# Windows
-NTUSER.DAT*
-*.TxR*
-*.TM.blf
-*.TMContainer*
-Configurações Locais/
-Meus Documentos/
-Dados de Aplicativos/
+# System
+.DS_Store
+Thumbs.db
+*.log
