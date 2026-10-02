@@ -1,1 +1,12 @@
-﻿{"version":"0.2.0","configurations":[{"type":"java","name":"Run ChessApp","request":"launch","mainClass":"chessengine.ChessApp","projectName":"chessengine"}]}
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Executar Xadrez",
+      "request": "launch",
+      "mainClass": "xadrez.AplicacaoXadrez",
+      "projectName": "motor-de-xadrez"
+    }
+  ]
+}
