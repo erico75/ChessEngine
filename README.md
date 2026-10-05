@@ -3,7 +3,7 @@
 A custom chess game and rule engine and GUI built from scratch in Java 17 using Maven.
 
 I started this project as a practical exercise to get better at object-oriented design and Java Swing. 
-I followed a few basic rule-implementation tutorials to get the initial logic down, but the actual board state, piece behavior, and move validation were all built from scratch without using any third-party chess libraries.
+I followed a few basic rule-implementation tutorials to get the initial logic down, but the actual board state, piece behavior, and move validation were all built without using any third-party chess libraries.
 
 
 ## V1:
