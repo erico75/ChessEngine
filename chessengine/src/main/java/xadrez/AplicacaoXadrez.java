@@ -23,7 +23,6 @@ public class AplicacaoXadrez {
     private PainelTabuleiro painelTabuleiro;
     private JLabel etiquetaEstado;
     private JTextArea areaHistorico;
-    private JButton botaoReivindicarEmpate;
 
     public AplicacaoXadrez(File diretorioProjeto) {
         this.diretorioProjeto = diretorioProjeto;
@@ -215,16 +214,12 @@ public class AplicacaoXadrez {
             botaoNovaPartida.addActionListener(a -> reiniciarPartida());
             JButton botaoDesfazer = new JButton("Desfazer");
             botaoDesfazer.addActionListener(a -> desfazerJogada());
-            botaoReivindicarEmpate = new JButton("Reivindicar empate");
-            botaoReivindicarEmpate.setEnabled(false);
-            botaoReivindicarEmpate.addActionListener(a -> reivindicarEmpate());
             etiquetaEstado = new JLabel("");
             etiquetaEstado.setFont(etiquetaEstado.getFont().deriveFont(Font.BOLD, 14f));
             barraSuperior.add(etiquetaBrancas);
             barraSuperior.add(etiquetaPretas);
             barraSuperior.add(botaoNovaPartida);
             barraSuperior.add(botaoDesfazer);
-            barraSuperior.add(botaoReivindicarEmpate);
             barraSuperior.add(etiquetaEstado);
             janela.add(barraSuperior, BorderLayout.NORTH);
 
@@ -345,9 +340,6 @@ public class AplicacaoXadrez {
         montarPosicaoInicial();
         turnoAtual = Cor.BRANCO;
         jogoEncerrado = false;
-        if (botaoReivindicarEmpate != null) {
-            botaoReivindicarEmpate.setEnabled(false);
-        }
         if (etiquetaEstado != null) {
             etiquetaEstado.setText("");
         }
@@ -406,38 +398,10 @@ public class AplicacaoXadrez {
         } else if (tabuleiro.ehAfogamento(ladoDaVez)) {
             jogoEncerrado = true;
             etiquetaEstado.setText("Empate por afogamento");
-        } else if (tabuleiro.ehEmpateRegraSetentaECincoLances() || tabuleiro.ehEmpatePorRepeticaoQuintupla()) {
-            jogoEncerrado = true;
-            etiquetaEstado.setText(tabuleiro.ehEmpateRegraSetentaECincoLances()
-                    ? "Empate pela regra dos 75 lances" : "Empate por repetição quíntupla");
-        } else if (tabuleiro.materialInsuficiente()) {
-            jogoEncerrado = true;
-            etiquetaEstado.setText("Empate por material insuficiente");
-        } else if (tabuleiro.podeReivindicarRegraCinquentaLances()
-                || tabuleiro.podeReivindicarRepeticaoTripla()) {
-            etiquetaEstado.setText("Empate disponível para reivindicação");
         } else if (tabuleiro.estaEmXeque(ladoDaVez)) {
             etiquetaEstado.setText(nomeDaCor(ladoDaVez) + " está em xeque");
         } else {
             etiquetaEstado.setText("");
-        }
-        atualizarBotaoReivindicarEmpate();
-    }
-
-    private void atualizarBotaoReivindicarEmpate() {
-        if (botaoReivindicarEmpate != null) {
-            boolean reivindicacaoDisponivel = tabuleiro.podeReivindicarRegraCinquentaLances()
-                    || tabuleiro.podeReivindicarRepeticaoTripla();
-            botaoReivindicarEmpate.setEnabled(!jogoEncerrado && reivindicacaoDisponivel);
-        }
-    }
-
-    private void reivindicarEmpate() {
-        if (tabuleiro.podeReivindicarRegraCinquentaLances()
-                || tabuleiro.podeReivindicarRepeticaoTripla()) {
-            jogoEncerrado = true;
-            etiquetaEstado.setText("Empate reivindicado");
-            botaoReivindicarEmpate.setEnabled(false);
         }
     }
 

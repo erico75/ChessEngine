@@ -13,7 +13,6 @@ public final class Jogada {
     final Posicao destinoJogadaAnterior;
     final boolean jogadaAnteriorFoiDuploPeao;
     final Cor turnoAnterior;
-    final int contadorMeioLancesAnterior;
     final boolean roqueCurtoAnteriorBrancas;
     final boolean roqueLongoAnteriorBrancas;
     final boolean roqueCurtoAnteriorPretas;
@@ -23,7 +22,7 @@ public final class Jogada {
 
     Jogada(Posicao origem, Posicao destino, Peca pecaMovida, Peca pecaCapturada,
          Posicao posicaoCaptura, Posicao origemJogadaAnterior, Posicao destinoJogadaAnterior,
-         boolean jogadaAnteriorFoiDuploPeao, Cor turnoAnterior, int contadorMeioLancesAnterior,
+         boolean jogadaAnteriorFoiDuploPeao, Cor turnoAnterior,
          boolean roqueCurtoAnteriorBrancas, boolean roqueLongoAnteriorBrancas,
          boolean roqueCurtoAnteriorPretas, boolean roqueLongoAnteriorPretas,
          Posicao origemTorre, Posicao destinoTorre) {
@@ -36,7 +35,6 @@ public final class Jogada {
         this.destinoJogadaAnterior = destinoJogadaAnterior;
         this.jogadaAnteriorFoiDuploPeao = jogadaAnteriorFoiDuploPeao;
         this.turnoAnterior = turnoAnterior;
-        this.contadorMeioLancesAnterior = contadorMeioLancesAnterior;
         this.roqueCurtoAnteriorBrancas = roqueCurtoAnteriorBrancas;
         this.roqueLongoAnteriorBrancas = roqueLongoAnteriorBrancas;
         this.roqueCurtoAnteriorPretas = roqueCurtoAnteriorPretas;

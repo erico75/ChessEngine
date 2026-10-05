@@ -10,20 +10,16 @@ import xadrez.pecas.Torre;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class Tabuleiro {
     private final Peca[][] tabuleiro = new Peca[8][8];
     private final ArrayDeque<Jogada> historico = new ArrayDeque<>();
-    private final Map<String, Integer> repeticoes = new HashMap<>();
     private Posicao origemUltimaJogada;
     private Posicao destinoUltimaJogada;
     private boolean ultimaJogadaFoiDuploPeao;
     private Cor turnoAtual = Cor.BRANCO;
-    private int contadorMeioLances;
     private boolean roqueCurtoBrancas;
     private boolean roqueLongoBrancas;
     private boolean roqueCurtoPretas;
@@ -43,10 +39,6 @@ public class Tabuleiro {
 
     public Cor obterTurnoAtual() {
         return turnoAtual;
-    }
-
-    public int obterContadorMeioLances() {
-        return contadorMeioLances;
     }
 
     public boolean podeDesfazer() {
@@ -196,7 +188,7 @@ public class Tabuleiro {
         Peca pecaCapturada = obterCasa(posicaoCapturaReal);
         Jogada mover = new Jogada(origem, destino, peca, pecaCapturada, posicaoCapturaReal,
                 origemUltimaJogada, destinoUltimaJogada, ultimaJogadaFoiDuploPeao, turnoAtual,
-                contadorMeioLances, roqueCurtoBrancas, roqueLongoBrancas, roqueCurtoPretas, roqueLongoPretas,
+                roqueCurtoBrancas, roqueLongoBrancas, roqueCurtoPretas, roqueLongoPretas,
                 origemTorre, destinoTorre);
         historico.push(mover);
 
@@ -215,12 +207,10 @@ public class Tabuleiro {
         }
 
         atualizarDireitosRoque(peca, origem, pecaCapturada, posicaoCapturaReal);
-        contadorMeioLances = peca instanceof Peao || pecaCapturada != null ? 0 : contadorMeioLances + 1;
         origemUltimaJogada = origem;
         destinoUltimaJogada = destino;
         ultimaJogadaFoiDuploPeao = peca instanceof Peao && Math.abs(origem.linha - destino.linha) == 2;
         turnoAtual = oposta(turnoAtual);
-        registrarPosicaoAtual();
         return true;
     }
 
@@ -229,7 +219,6 @@ public class Tabuleiro {
             return false;
         }
 
-        reduzirRepeticao(chavePosicao());
         Jogada mover = historico.pop();
         definirCasa(mover.destino, null);
         definirCasa(mover.origem, mover.pecaMovida);
@@ -245,7 +234,6 @@ public class Tabuleiro {
         destinoUltimaJogada = mover.destinoJogadaAnterior;
         ultimaJogadaFoiDuploPeao = mover.jogadaAnteriorFoiDuploPeao;
         turnoAtual = mover.turnoAnterior;
-        contadorMeioLances = mover.contadorMeioLancesAnterior;
         roqueCurtoBrancas = mover.roqueCurtoAnteriorBrancas;
         roqueLongoBrancas = mover.roqueLongoAnteriorBrancas;
         roqueCurtoPretas = mover.roqueCurtoAnteriorPretas;
@@ -275,7 +263,6 @@ public class Tabuleiro {
         destinoUltimaJogada = null;
         ultimaJogadaFoiDuploPeao = false;
         turnoAtual = Cor.BRANCO;
-        contadorMeioLances = 0;
         roqueCurtoBrancas = false;
         roqueLongoBrancas = false;
         roqueCurtoPretas = false;
@@ -312,53 +299,6 @@ public class Tabuleiro {
 
     public boolean ehAfogamento(Cor cor) {
         return localizarRei(cor) != null && !estaEmXeque(cor) && !possuiJogadaLegal(cor);
-    }
-
-    public boolean podeReivindicarRegraCinquentaLances() {
-        return contadorMeioLances >= 100;
-    }
-
-    public boolean ehEmpateRegraSetentaECincoLances() {
-        return contadorMeioLances >= 150;
-    }
-
-    public boolean podeReivindicarRepeticaoTripla() {
-        return repeticoes.getOrDefault(chavePosicao(), 0) >= 3;
-    }
-
-    public boolean ehEmpatePorRepeticaoQuintupla() {
-        return repeticoes.getOrDefault(chavePosicao(), 0) >= 5;
-    }
-
-    public boolean materialInsuficiente() {
-        if (localizarRei(Cor.BRANCO) == null || localizarRei(Cor.PRETO) == null) {
-            return false;
-        }
-        int quantidadeBispos = 0;
-        int quantidadeCavalos = 0;
-        Boolean corCasaBispo = null;
-        for (Peca peca : pecas()) {
-            if (peca instanceof Rei) {
-                continue;
-            }
-            if (peca instanceof Peao || peca instanceof Torre || peca instanceof Rainha) {
-                return false;
-            }
-            if (peca instanceof Bispo) {
-                quantidadeBispos++;
-                boolean corCasa = (peca.posicao().linha + peca.posicao().coluna) % 2 == 0;
-                if (corCasaBispo != null && corCasaBispo != corCasa) {
-                    return false;
-                }
-                corCasaBispo = corCasa;
-            } else if (peca instanceof Cavalo) {
-                quantidadeCavalos++;
-            } else {
-                return false;
-            }
-        }
-        return quantidadeBispos + quantidadeCavalos <= 1
-                || (quantidadeCavalos == 0 && quantidadeBispos > 0 && corCasaBispo != null);
     }
 
     private Posicao casaCapturaEnPassant(Peca peca, Posicao origem, Posicao destino) {
@@ -441,63 +381,6 @@ public class Tabuleiro {
 
     private void reiniciarHistorico() {
         historico.clear();
-        repeticoes.clear();
-        registrarPosicaoAtual();
-    }
-
-    private void registrarPosicaoAtual() {
-        String chave = chavePosicao();
-        repeticoes.put(chave, repeticoes.getOrDefault(chave, 0) + 1);
-    }
-
-    private void reduzirRepeticao(String chave) {
-        int quantidade = repeticoes.getOrDefault(chave, 0);
-        if (quantidade <= 1) {
-            repeticoes.remove(chave);
-        } else {
-            repeticoes.put(chave, quantidade - 1);
-        }
-    }
-
-    private String chavePosicao() {
-        StringBuilder chave = new StringBuilder(80);
-        for (int linha = 0; linha < 8; linha++) {
-            for (int coluna = 0; coluna < 8; coluna++) {
-                Peca peca = tabuleiro[linha][coluna];
-                if (peca == null) {
-                    chave.append('.');
-                } else {
-                    char codigoPeca;
-                    if (peca instanceof Peao) {
-                        codigoPeca = 'P';
-                    } else if (peca instanceof Cavalo) {
-                        codigoPeca = 'N';
-                    } else if (peca instanceof Bispo) {
-                        codigoPeca = 'B';
-                    } else if (peca instanceof Torre) {
-                        codigoPeca = 'R';
-                    } else if (peca instanceof Rainha) {
-                        codigoPeca = 'Q';
-                    } else {
-                        codigoPeca = 'K';
-                    }
-                    chave.append(peca.cor() == Cor.BRANCO ? 'w' : 'b').append(codigoPeca);
-                }
-            }
-        }
-        chave.append(turnoAtual).append(roqueCurtoBrancas).append(roqueLongoBrancas)
-                .append(roqueCurtoPretas).append(roqueLongoPretas);
-        if (ultimaJogadaFoiDuploPeao && destinoUltimaJogada != null && origemUltimaJogada != null) {
-            int linhaAdjacente = destinoUltimaJogada.linha;
-            for (int coluna : new int[]{destinoUltimaJogada.coluna - 1, destinoUltimaJogada.coluna + 1}) {
-                Peca peca = obterCasa(new Posicao(linhaAdjacente, coluna));
-                if (peca instanceof Peao && peca.cor() == turnoAtual) {
-                    chave.append('e').append(destinoUltimaJogada.linha).append(destinoUltimaJogada.coluna);
-                    break;
-                }
-            }
-        }
-        return chave.toString();
     }
 
     private boolean mesmaPosicao(Posicao esquerda, Posicao direita) {
